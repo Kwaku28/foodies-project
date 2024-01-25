@@ -1,13 +1,35 @@
+import { Suspense } from "react";
 import Link from "next/link";
+import styles from "./page.module.css";
+import MealsGrid from "@/components/meals/meals-grid";
+import { getAllMeals } from "@/lib/meals";
 
-export default function Meals() {
+async function Meals() {
+  const meals = await getAllMeals();
+
+  return <MealsGrid meals={meals} />;
+}
+
+export default function MealsPage() {
   return (
-    <main>
-      <h1 style={{ color: 'white', textAlign: 'center' }}>
-        Serve your favourite meals!
-      </h1>
-      <p style={{ textAlign: 'center' }}><Link href="/meals/food-1">Food 1</Link></p>
-      <p style={{ textAlign: 'center' }}><Link href="/meals/food-2">Food 2</Link></p>
-    </main>
+    <>
+      <header className={styles.header}>
+        <h1>
+          Delicous meals, made <span className={styles.highlight}>by you</span>
+        </h1>
+        <p>
+          Choose your favorite recipe and cook it yourself. It&apos;s simpley
+          fun
+        </p>
+        <p className={styles.cta}>
+          <Link href="/meals/share">Share your favorite recipe</Link>
+        </p>
+      </header>
+      <main className={styles.main}>
+        <Suspense fallback={<p className={styles.loading}>Fetching Meals...</p>}>
+          <Meals />
+        </Suspense>
+      </main>
+    </>
   );
 }
